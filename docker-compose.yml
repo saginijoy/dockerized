@@ -1,0 +1,29 @@
+version: "3.7"
+services:
+  wow-badges-db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=wow-badges-test
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d wow-badges-test"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+  wow-badges:
+    image: wow-badges
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://wow-badges-db:5432/wow-badges-test
+      - spring.datasource.username=root
+      - spring.datasource.password=root
+    ports:
+      - 9000:9092
+  wow-admin:
+    build:
+      context: ./wow-admin/
+    environment:
+      - badges.service.url=wow-badges:9000
+    ports:
+      - 9001:9092
