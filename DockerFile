@@ -1,0 +1,11 @@
+FROM java
+
+ARG JAR_FILE
+
+COPY ${JAR_FILE} app.jar
+
+#ENV PORT_IS_SET=${SERVER_PORT:+true}
+
+EXPOSE ${SERVER_PORT:-8080}
+
+ENTRYPOINT [“java”,“-Djava.security.egd=file:/dev/./urandom”,“-jar”,“/app.jar”]
